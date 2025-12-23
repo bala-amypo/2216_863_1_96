@@ -3,7 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.TeamCapacityConfig;
 
 public interface TeamCapacityRuleService {
-    TeamCapacityConfig createRule(TeamCapacityConfig rule);
-    TeamCapacityConfig updateRule(Long id, TeamCapacityConfig updatedRule);
+    TeamCapacityConfig createRule(TeamCapacityConfig config);
+    TeamCapacityConfig updateRule(Long id, TeamCapacityConfig config);
     TeamCapacityConfig getRuleByTeam(String teamName);
 }
