@@ -9,34 +9,40 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeProfileController {
-    private final EmployeeProfileService employeeProfileService;
-
-    public EmployeeProfileController(EmployeeProfileService employeeProfileService) {
-        this.employeeProfileService = employeeProfileService;
+    
+    private final EmployeeProfileService employeeService;
+    
+    public EmployeeProfileController(EmployeeProfileService employeeService) {
+        this.employeeService = employeeService;
     }
-
+    
     @PostMapping
     public ResponseEntity<EmployeeProfileDto> create(@RequestBody EmployeeProfileDto dto) {
-        return ResponseEntity.ok(employeeProfileService.create(dto));
+        EmployeeProfileDto created = employeeService.create(dto);
+        return ResponseEntity.ok(created);
     }
-
+    
     @PutMapping("/{id}")
     public ResponseEntity<EmployeeProfileDto> update(@PathVariable Long id, @RequestBody EmployeeProfileDto dto) {
-        return ResponseEntity.ok(employeeProfileService.update(id, dto));
+        EmployeeProfileDto updated = employeeService.update(id, dto);
+        return ResponseEntity.ok(updated);
     }
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeProfileDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(employeeProfileService.getById(id));
+        EmployeeProfileDto employee = employeeService.getById(id);
+        return ResponseEntity.ok(employee);
     }
-
+    
     @GetMapping("/team/{teamName}")
     public ResponseEntity<List<EmployeeProfileDto>> getByTeam(@PathVariable String teamName) {
-        return ResponseEntity.ok(employeeProfileService.getByTeam(teamName));
+        List<EmployeeProfileDto> employees = employeeService.getByTeam(teamName);
+        return ResponseEntity.ok(employees);
     }
-
+    
     @GetMapping
     public ResponseEntity<List<EmployeeProfileDto>> getAll() {
-        return ResponseEntity.ok(employeeProfileService.getAll());
+        List<EmployeeProfileDto> employees = employeeService.getAll();
+        return ResponseEntity.ok(employees);
     }
 }
