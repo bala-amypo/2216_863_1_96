@@ -9,12 +9,6 @@ public class CapacityAnalysisResultDto {
 
     public CapacityAnalysisResultDto() {}
 
-    public CapacityAnalysisResultDto(boolean risky, Map<LocalDate, Double> capacityByDate) {
-        this.risky = risky;
-        this.capacityByDate = capacityByDate;
-    }
-
-    // Getters and Setters
     public boolean isRisky() { return risky; }
     public void setRisky(boolean risky) { this.risky = risky; }
 

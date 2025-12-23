@@ -13,17 +13,6 @@ public class LeaveRequestDto {
 
     public LeaveRequestDto() {}
 
-    public LeaveRequestDto(Long id, Long employeeId, LocalDate startDate, LocalDate endDate, String type, String status, String reason) {
-        this.id = id;
-        this.employeeId = employeeId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.type = type;
-        this.status = status;
-        this.reason = reason;
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

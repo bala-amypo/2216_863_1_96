@@ -8,24 +8,28 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/capacity-rules")
 public class TeamCapacityRuleController {
-    private final TeamCapacityRuleService teamCapacityRuleService;
-
-    public TeamCapacityRuleController(TeamCapacityRuleService teamCapacityRuleService) {
-        this.teamCapacityRuleService = teamCapacityRuleService;
+    
+    private final TeamCapacityRuleService capacityRuleService;
+    
+    public TeamCapacityRuleController(TeamCapacityRuleService capacityRuleService) {
+        this.capacityRuleService = capacityRuleService;
     }
-
+    
     @PostMapping
-    public ResponseEntity<TeamCapacityConfig> create(@RequestBody TeamCapacityConfig rule) {
-        return ResponseEntity.ok(teamCapacityRuleService.createRule(rule));
+    public ResponseEntity<TeamCapacityConfig> create(@RequestBody TeamCapacityConfig config) {
+        TeamCapacityConfig created = capacityRuleService.createRule(config);
+        return ResponseEntity.ok(created);
     }
-
+    
     @PutMapping("/{id}")
-    public ResponseEntity<TeamCapacityConfig> update(@PathVariable Long id, @RequestBody TeamCapacityConfig rule) {
-        return ResponseEntity.ok(teamCapacityRuleService.updateRule(id, rule));
+    public ResponseEntity<TeamCapacityConfig> update(@PathVariable Long id, @RequestBody TeamCapacityConfig config) {
+        TeamCapacityConfig updated = capacityRuleService.updateRule(id, config);
+        return ResponseEntity.ok(updated);
     }
-
+    
     @GetMapping("/team/{teamName}")
     public ResponseEntity<TeamCapacityConfig> getByTeam(@PathVariable String teamName) {
-        return ResponseEntity.ok(teamCapacityRuleService.getRuleByTeam(teamName));
+        TeamCapacityConfig config = capacityRuleService.getRuleByTeam(teamName);
+        return ResponseEntity.ok(config);
     }
 }
