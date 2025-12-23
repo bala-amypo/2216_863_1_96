@@ -15,11 +15,13 @@ public class EmployeeProfile {
     @Column(unique = true, nullable = false)
     private String employeeId;
 
+    @Column(nullable = false)
     private String fullName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String teamName;
 
     private String role;
@@ -27,7 +29,8 @@ public class EmployeeProfile {
     @Column(nullable = false)
     private Boolean active = true;
 
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToMany
     @JoinTable(
@@ -39,17 +42,6 @@ public class EmployeeProfile {
 
     public EmployeeProfile() {}
 
-    public EmployeeProfile(String employeeId, String fullName, String email, String teamName, String role) {
-        this.employeeId = employeeId;
-        this.fullName = fullName;
-        this.email = email;
-        this.teamName = teamName;
-        this.role = role;
-        this.active = true;
-        this.createdAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

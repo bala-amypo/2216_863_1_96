@@ -10,21 +10,18 @@ public class CapacityAlert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String teamName;
+
+    @Column(nullable = false)
     private LocalDate date;
+
     private String severity;
+
     private String message;
 
     public CapacityAlert() {}
 
-    public CapacityAlert(String teamName, LocalDate date, String severity, String message) {
-        this.teamName = teamName;
-        this.date = date;
-        this.severity = severity;
-        this.message = message;
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

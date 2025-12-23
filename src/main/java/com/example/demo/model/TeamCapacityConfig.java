@@ -9,21 +9,17 @@ public class TeamCapacityConfig {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String teamName;
 
+    @Column(nullable = false)
     private Integer totalHeadcount;
+
+    @Column(nullable = false)
     private Integer minCapacityPercent;
 
     public TeamCapacityConfig() {}
 
-    public TeamCapacityConfig(String teamName, Integer totalHeadcount, Integer minCapacityPercent) {
-        this.teamName = teamName;
-        this.totalHeadcount = totalHeadcount;
-        this.minCapacityPercent = minCapacityPercent;
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
