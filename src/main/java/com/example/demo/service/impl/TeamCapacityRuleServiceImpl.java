@@ -9,43 +9,47 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TeamCapacityRuleServiceImpl implements TeamCapacityRuleService {
-    private final TeamCapacityConfigRepository teamCapacityConfigRepository;
-
-    public TeamCapacityRuleServiceImpl(TeamCapacityConfigRepository teamCapacityConfigRepository) {
-        this.teamCapacityConfigRepository = teamCapacityConfigRepository;
+    
+    private final TeamCapacityConfigRepository capacityRepo;
+    
+    public TeamCapacityRuleServiceImpl(TeamCapacityConfigRepository capacityRepo) {
+        this.capacityRepo = capacityRepo;
     }
-
+    
     @Override
-    public TeamCapacityConfig createRule(TeamCapacityConfig rule) {
-        validateRule(rule);
-        return teamCapacityConfigRepository.save(rule);
+    public TeamCapacityConfig createRule(TeamCapacityConfig config) {
+        validateConfig(config);
+        return capacityRepo.save(config);
     }
-
+    
     @Override
-    public TeamCapacityConfig updateRule(Long id, TeamCapacityConfig updatedRule) {
-        TeamCapacityConfig existing = teamCapacityConfigRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Team capacity rule not found"));
+    public TeamCapacityConfig updateRule(Long id, TeamCapacityConfig config) {
+        TeamCapacityConfig existing = capacityRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Capacity config not found"));
         
-        validateRule(updatedRule);
+        validateConfig(config);
         
-        existing.setTeamName(updatedRule.getTeamName());
-        existing.setTotalHeadcount(updatedRule.getTotalHeadcount());
-        existing.setMinCapacityPercent(updatedRule.getMinCapacityPercent());
+        existing.setTeamName(config.getTeamName());
+        existing.setTotalHeadcount(config.getTotalHeadcount());
+        existing.setMinCapacityPercent(config.getMinCapacityPercent());
         
-        return teamCapacityConfigRepository.save(existing);
+        return capacityRepo.save(existing);
     }
-
+    
     @Override
     public TeamCapacityConfig getRuleByTeam(String teamName) {
-        return teamCapacityConfigRepository.findByTeamName(teamName)
+        return capacityRepo.findByTeamName(teamName)
                 .orElseThrow(() -> new ResourceNotFoundException("Capacity config not found"));
     }
-
-    private void validateRule(TeamCapacityConfig rule) {
-        if (rule.getTotalHeadcount() <= 0) {
-            throw new BadRequestException("Total headcount must be greater than 0");
+    
+    private void validateConfig(TeamCapacityConfig config) {
+        if (config.getTotalHeadcount() == null || config.getTotalHeadcount() < 1) {
+            throw new BadRequestException("Invalid total headcount");
         }
-        if (rule.getMinCapacityPercent() < 1 || rule.getMinCapacityPercent() > 100) {
+        
+        if (config.getMinCapacityPercent() == null || 
+            config.getMinCapacityPercent() < 1 || 
+            config.getMinCapacityPercent() > 100) {
             throw new BadRequestException("Min capacity percent must be between 1 and 100");
         }
     }

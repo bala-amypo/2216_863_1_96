@@ -12,12 +12,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeProfileServiceImpl implements EmployeeProfileService {
-    private final EmployeeProfileRepository employeeProfileRepository;
-
-    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeProfileRepository) {
-        this.employeeProfileRepository = employeeProfileRepository;
+    
+    private final EmployeeProfileRepository employeeRepo;
+    
+    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeRepo) {
+        this.employeeRepo = employeeRepo;
     }
-
+    
     @Override
     public EmployeeProfileDto create(EmployeeProfileDto dto) {
         EmployeeProfile employee = new EmployeeProfile();
@@ -29,64 +30,63 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
         employee.setActive(true);
         employee.setCreatedAt(LocalDateTime.now());
         
-        EmployeeProfile saved = employeeProfileRepository.save(employee);
-        return mapToDto(saved);
+        employee = employeeRepo.save(employee);
+        return mapToDto(employee);
     }
-
+    
     @Override
     public EmployeeProfileDto update(Long id, EmployeeProfileDto dto) {
-        EmployeeProfile employee = employeeProfileRepository.findById(id)
+        EmployeeProfile employee = employeeRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
         
-        employee.setEmployeeId(dto.getEmployeeId());
         employee.setFullName(dto.getFullName());
-        employee.setEmail(dto.getEmail());
         employee.setTeamName(dto.getTeamName());
         employee.setRole(dto.getRole());
         
-        EmployeeProfile saved = employeeProfileRepository.save(employee);
-        return mapToDto(saved);
+        employee = employeeRepo.save(employee);
+        return mapToDto(employee);
     }
-
+    
     @Override
     public void deactivate(Long id) {
-        EmployeeProfile employee = employeeProfileRepository.findById(id)
+        EmployeeProfile employee = employeeRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+        
         employee.setActive(false);
-        employeeProfileRepository.save(employee);
+        employeeRepo.save(employee);
     }
-
+    
     @Override
     public EmployeeProfileDto getById(Long id) {
-        EmployeeProfile employee = employeeProfileRepository.findById(id)
+        EmployeeProfile employee = employeeRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
         return mapToDto(employee);
     }
-
+    
     @Override
     public List<EmployeeProfileDto> getByTeam(String teamName) {
-        return employeeProfileRepository.findByTeamNameAndActiveTrue(teamName)
+        return employeeRepo.findByTeamNameAndActiveTrue(teamName)
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public List<EmployeeProfileDto> getAll() {
-        return employeeProfileRepository.findAll()
+        return employeeRepo.findAll()
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-
+    
     private EmployeeProfileDto mapToDto(EmployeeProfile employee) {
-        return new EmployeeProfileDto(
-                employee.getId(),
-                employee.getEmployeeId(),
-                employee.getFullName(),
-                employee.getEmail(),
-                employee.getTeamName(),
-                employee.getRole()
-        );
+        EmployeeProfileDto dto = new EmployeeProfileDto();
+        dto.setId(employee.getId());
+        dto.setEmployeeId(employee.getEmployeeId());
+        dto.setFullName(employee.getFullName());
+        dto.setEmail(employee.getEmail());
+        dto.setTeamName(employee.getTeamName());
+        dto.setRole(employee.getRole());
+        return dto;
     }
 }

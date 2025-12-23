@@ -15,84 +15,84 @@ import java.util.stream.Collectors;
 
 @Service
 public class LeaveRequestServiceImpl implements LeaveRequestService {
-    private final LeaveRequestRepository leaveRequestRepository;
-    private final EmployeeProfileRepository employeeProfileRepository;
-
-    public LeaveRequestServiceImpl(LeaveRequestRepository leaveRequestRepository, 
-                                   EmployeeProfileRepository employeeProfileRepository) {
-        this.leaveRequestRepository = leaveRequestRepository;
-        this.employeeProfileRepository = employeeProfileRepository;
+    
+    private final LeaveRequestRepository leaveRepo;
+    private final EmployeeProfileRepository employeeRepo;
+    
+    public LeaveRequestServiceImpl(LeaveRequestRepository leaveRepo, EmployeeProfileRepository employeeRepo) {
+        this.leaveRepo = leaveRepo;
+        this.employeeRepo = employeeRepo;
     }
-
+    
     @Override
     public LeaveRequestDto create(LeaveRequestDto dto) {
-        EmployeeProfile employee = employeeProfileRepository.findById(dto.getEmployeeId())
+        EmployeeProfile employee = employeeRepo.findById(dto.getEmployeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
         
         if (dto.getStartDate().isAfter(dto.getEndDate())) {
             throw new BadRequestException("Start date must be before or equal to end date");
         }
         
-        LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployee(employee);
-        leaveRequest.setStartDate(dto.getStartDate());
-        leaveRequest.setEndDate(dto.getEndDate());
-        leaveRequest.setType(dto.getType());
-        leaveRequest.setReason(dto.getReason());
-        leaveRequest.setStatus("PENDING");
+        LeaveRequest leave = new LeaveRequest();
+        leave.setEmployee(employee);
+        leave.setStartDate(dto.getStartDate());
+        leave.setEndDate(dto.getEndDate());
+        leave.setType(dto.getType());
+        leave.setReason(dto.getReason());
+        leave.setStatus(LeaveRequest.LeaveStatus.PENDING);
         
-        LeaveRequest saved = leaveRequestRepository.save(leaveRequest);
-        return mapToDto(saved);
+        leave = leaveRepo.save(leave);
+        return mapToDto(leave);
     }
-
+    
     @Override
     public LeaveRequestDto approve(Long id) {
-        LeaveRequest leaveRequest = leaveRequestRepository.findById(id)
+        LeaveRequest leave = leaveRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Leave request not found"));
         
-        leaveRequest.setStatus("APPROVED");
-        LeaveRequest saved = leaveRequestRepository.save(leaveRequest);
-        return mapToDto(saved);
+        leave.setStatus(LeaveRequest.LeaveStatus.APPROVED);
+        leave = leaveRepo.save(leave);
+        return mapToDto(leave);
     }
-
+    
     @Override
     public LeaveRequestDto reject(Long id) {
-        LeaveRequest leaveRequest = leaveRequestRepository.findById(id)
+        LeaveRequest leave = leaveRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Leave request not found"));
         
-        leaveRequest.setStatus("REJECTED");
-        LeaveRequest saved = leaveRequestRepository.save(leaveRequest);
-        return mapToDto(saved);
+        leave.setStatus(LeaveRequest.LeaveStatus.REJECTED);
+        leave = leaveRepo.save(leave);
+        return mapToDto(leave);
     }
-
+    
     @Override
     public List<LeaveRequestDto> getByEmployee(Long employeeId) {
-        EmployeeProfile employee = employeeProfileRepository.findById(employeeId)
+        EmployeeProfile employee = employeeRepo.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
         
-        return leaveRequestRepository.findByEmployee(employee)
+        return leaveRepo.findByEmployee(employee)
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public List<LeaveRequestDto> getOverlappingForTeam(String teamName, LocalDate start, LocalDate end) {
-        return leaveRequestRepository.findApprovedOverlappingForTeam(teamName, start, end)
+        return leaveRepo.findApprovedOverlappingForTeam(teamName, start, end)
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-
-    private LeaveRequestDto mapToDto(LeaveRequest leaveRequest) {
-        return new LeaveRequestDto(
-                leaveRequest.getId(),
-                leaveRequest.getEmployee().getId(),
-                leaveRequest.getStartDate(),
-                leaveRequest.getEndDate(),
-                leaveRequest.getType(),
-                leaveRequest.getStatus(),
-                leaveRequest.getReason()
-        );
+    
+    private LeaveRequestDto mapToDto(LeaveRequest leave) {
+        LeaveRequestDto dto = new LeaveRequestDto();
+        dto.setId(leave.getId());
+        dto.setEmployeeId(leave.getEmployee().getId());
+        dto.setStartDate(leave.getStartDate());
+        dto.setEndDate(leave.getEndDate());
+        dto.setType(leave.getType());
+        dto.setStatus(leave.getStatus().name());
+        dto.setReason(leave.getReason());
+        return dto;
     }
 }
