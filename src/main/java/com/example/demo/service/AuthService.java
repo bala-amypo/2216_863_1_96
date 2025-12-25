@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
+
 public interface AuthService {
-    // Authentication removed
+    AuthResponse authenticate(AuthRequest request);
 }

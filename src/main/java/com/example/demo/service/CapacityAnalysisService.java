@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.CapacityAnalysisResultDto;
+import java.time.LocalDate;
+
 public interface CapacityAnalysisService {
-    // Capacity analysis removed - keeping only CRUD operations
+    CapacityAnalysisResultDto analyzeTeamCapacity(String teamName, LocalDate start, LocalDate end);
 }
