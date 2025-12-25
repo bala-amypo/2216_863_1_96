@@ -4,7 +4,6 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
@@ -20,14 +19,14 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI()
 
-                // ✅ Server base URL
+        return new OpenAPI()
+                // ✅ Server URL
                 .servers(List.of(
                         new Server().url("https://9107.32procr.amypo.ai")
                 ))
 
-                // ✅ API information
+                // ✅ API Info
                 .info(new Info()
                         .title("Leave Overlap Team Capacity Analyzer API")
                         .version("1.0.0")
@@ -35,20 +34,22 @@ public class OpenApiConfig {
                         .contact(new Contact()
                                 .name("API Support")
                                 .email("support@example.com"))
-                
-                // ✅ Global security requirement (shows Authorize button)
+                )
+
+                // ✅ Enable authentication globally (Authorize button)
                 .addSecurityItem(new SecurityRequirement()
                         .addList(SECURITY_SCHEME_NAME))
 
                 // ✅ JWT Bearer configuration
                 .components(new Components()
-                        .addSecuritySchemes(SECURITY_SCHEME_NAME,
+                        .addSecuritySchemes(
+                                SECURITY_SCHEME_NAME,
                                 new SecurityScheme()
-                                        .name(SECURITY_SCHEME_NAME)
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
-                                        .in(SecurityScheme.In.HEADER)
-                                        .description("Enter JWT token as: Bearer <token>")));
+                                        .description("Enter JWT token")
+                        )
+                );
     }
 }
