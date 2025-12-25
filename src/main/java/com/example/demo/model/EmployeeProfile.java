@@ -15,24 +15,17 @@ public class EmployeeProfile {
     @Column(unique = true, nullable = false)
     private String employeeId;
 
-    @Column(nullable = false)
     private String fullName;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String teamName;
-
     private String role;
-
-    @Column(nullable = false)
     private Boolean active = true;
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
         name = "employee_colleagues",
         joinColumns = @JoinColumn(name = "employee_id"),
@@ -42,6 +35,7 @@ public class EmployeeProfile {
 
     public EmployeeProfile() {}
 
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -60,7 +54,7 @@ public class EmployeeProfile {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    public Boolean getActive() { return active; }
+    public Boolean isActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }

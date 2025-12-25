@@ -11,29 +11,18 @@ public class LeaveRequest {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
+    @JoinColumn(name = "employee_id")
     private EmployeeProfile employee;
 
-    @Column(nullable = false)
     private LocalDate startDate;
-
-    @Column(nullable = false)
     private LocalDate endDate;
-
     private String type;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private LeaveStatus status = LeaveStatus.PENDING;
-
+    private String status;
     private String reason;
-
-    public enum LeaveStatus {
-        PENDING, APPROVED, REJECTED
-    }
 
     public LeaveRequest() {}
 
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -49,8 +38,8 @@ public class LeaveRequest {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
 
-    public LeaveStatus getStatus() { return status; }
-    public void setStatus(LeaveStatus status) { this.status = status; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }

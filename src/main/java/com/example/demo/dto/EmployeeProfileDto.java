@@ -8,8 +8,7 @@ public class EmployeeProfileDto {
     private String teamName;
     private String role;
 
-    public EmployeeProfileDto() {}
-
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -7,8 +7,7 @@ public class CapacityAnalysisResultDto {
     private boolean risky;
     private Map<LocalDate, Double> capacityByDate;
 
-    public CapacityAnalysisResultDto() {}
-
+    // Getters and Setters
     public boolean isRisky() { return risky; }
     public void setRisky(boolean risky) { this.risky = risky; }
 
