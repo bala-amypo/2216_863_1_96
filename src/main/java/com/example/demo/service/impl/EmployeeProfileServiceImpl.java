@@ -5,6 +5,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.EmployeeProfile;
 import com.example.demo.repository.EmployeeProfileRepository;
 import com.example.demo.service.EmployeeProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,13 +13,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeProfileServiceImpl implements EmployeeProfileService {
-    
-    private final EmployeeProfileRepository employeeRepo;
-    
-    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeRepo) {
-        this.employeeRepo = employeeRepo;
+
+    private final EmployeeProfileRepository employeeRepository;
+
+    @Autowired
+    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
-    
+
     @Override
     public EmployeeProfileDto create(EmployeeProfileDto dto) {
         EmployeeProfile employee = new EmployeeProfile();
@@ -29,57 +31,56 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
         employee.setRole(dto.getRole());
         employee.setActive(true);
         employee.setCreatedAt(LocalDateTime.now());
-        
-        employee = employeeRepo.save(employee);
-        return mapToDto(employee);
+
+        EmployeeProfile saved = employeeRepository.save(employee);
+        return convertToDto(saved);
     }
-    
+
     @Override
     public EmployeeProfileDto update(Long id, EmployeeProfileDto dto) {
-        EmployeeProfile employee = employeeRepo.findById(id)
+        EmployeeProfile employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
-        
-        employee.setFullName(dto.getFullName());
-        employee.setTeamName(dto.getTeamName());
-        employee.setRole(dto.getRole());
-        
-        employee = employeeRepo.save(employee);
-        return mapToDto(employee);
+
+        if (dto.getFullName() != null) employee.setFullName(dto.getFullName());
+        if (dto.getTeamName() != null) employee.setTeamName(dto.getTeamName());
+        if (dto.getRole() != null) employee.setRole(dto.getRole());
+
+        EmployeeProfile saved = employeeRepository.save(employee);
+        return convertToDto(saved);
     }
-    
+
     @Override
     public void deactivate(Long id) {
-        EmployeeProfile employee = employeeRepo.findById(id)
+        EmployeeProfile employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
-        
         employee.setActive(false);
-        employeeRepo.save(employee);
+        employeeRepository.save(employee);
     }
-    
+
     @Override
     public EmployeeProfileDto getById(Long id) {
-        EmployeeProfile employee = employeeRepo.findById(id)
+        EmployeeProfile employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
-        return mapToDto(employee);
+        return convertToDto(employee);
     }
-    
+
     @Override
     public List<EmployeeProfileDto> getByTeam(String teamName) {
-        return employeeRepo.findByTeamNameAndActiveTrue(teamName)
+        return employeeRepository.findByTeamNameAndActiveTrue(teamName)
                 .stream()
-                .map(this::mapToDto)
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<EmployeeProfileDto> getAll() {
-        return employeeRepo.findAll()
+        return employeeRepository.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
-    
-    private EmployeeProfileDto mapToDto(EmployeeProfile employee) {
+
+    private EmployeeProfileDto convertToDto(EmployeeProfile employee) {
         EmployeeProfileDto dto = new EmployeeProfileDto();
         dto.setId(employee.getId());
         dto.setEmployeeId(employee.getEmployeeId());
