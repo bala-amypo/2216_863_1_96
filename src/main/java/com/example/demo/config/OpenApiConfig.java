@@ -23,7 +23,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 // ✅ Server URL
                 .servers(List.of(
-                        new Server().url("https://9107.32procr.amypo.ai")
+                        new Server().url("https://9107.32procr.amypo.ai/")
                 ))
 
                 // ✅ API Info
