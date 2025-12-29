@@ -19,7 +19,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .servers(List.of(
-                        new Server().url("https://9107.32procr.amypo.ai/")
+                        new Server().url("https://9197.32procr.amypo.ai/")
                 ))
                 .info(new Info()
                         .title("Leave Overlap Team Capacity Analyzer API")
